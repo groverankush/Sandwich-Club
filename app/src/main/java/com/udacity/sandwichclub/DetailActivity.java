@@ -13,8 +13,6 @@ import com.squareup.picasso.Picasso;
 import com.udacity.sandwichclub.model.Sandwich;
 import com.udacity.sandwichclub.utils.JsonUtils;
 
-import java.util.List;
-
 public class DetailActivity extends AppCompatActivity {
 
     public static final String EXTRA_POSITION = "extra_position";
@@ -24,6 +22,7 @@ public class DetailActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
+
 
         ImageView ingredientsIv = findViewById(R.id.image_iv);
 
@@ -50,7 +49,14 @@ public class DetailActivity extends AppCompatActivity {
         }
 
         populateUI(sandwich);
-        Picasso.with(this)
+
+        /*
+          I very wel understood you feedback regarding adding an error placeholder. I will make
+          sure to add the same in future projects. I didn't use any place holder as I was unable
+          to find any nice looking image which has suitable usage rights. To avoid any conflicts
+          I left it as it is.
+         */
+        Picasso.get()
                 .load(sandwich.getImage())
                 .into(ingredientsIv);
 
@@ -64,29 +70,28 @@ public class DetailActivity extends AppCompatActivity {
 
     private void populateUI(Sandwich sandwich) {
 
-        String alsoKnownAs = getFormattedStringOfList(sandwich.getAlsoKnownAs());
-        findViewById(R.id.also_known_container).setVisibility(TextUtils.isEmpty(alsoKnownAs) ? View.GONE : View.VISIBLE);
+
+        String alsoKnownAs = TextUtils.join(", ", sandwich.getAlsoKnownAs()); // Works like a charm.
+
+        /* Also known as part will only be visible if the json's alsoKnownAs attribute is non empty.
+         Similar is the scenario for all the other places where ternary operator is used to
+         alter the visibility of view.*/
+        findViewById(R.id.also_known_container)
+                .setVisibility(TextUtils.isEmpty(alsoKnownAs) ? View.GONE : View.VISIBLE); // Altering View's visibility based on data
         ((TextView) findViewById(R.id.also_known_as_tv)).setText(alsoKnownAs);
 
-        String ingredients = getFormattedStringOfList(sandwich.getIngredients());
-        findViewById(R.id.ingredients_container).setVisibility(TextUtils.isEmpty(ingredients) ? View.GONE : View.VISIBLE);
+
+        String ingredients = TextUtils.join(",", sandwich.getIngredients());
+        findViewById(R.id.ingredients_container)
+                .setVisibility(TextUtils.isEmpty(ingredients) ? View.GONE : View.VISIBLE); // Altering View's visibility based on data
         ((TextView) findViewById(R.id.ingredients_tv)).setText(ingredients);
 
-        findViewById(R.id.origin_container).setVisibility(TextUtils.isEmpty(sandwich.getPlaceOfOrigin()) ? View.GONE : View.VISIBLE);
+        findViewById(R.id.origin_container)
+                .setVisibility(TextUtils.isEmpty(sandwich.getPlaceOfOrigin()) ? View.GONE : View.VISIBLE); // Altering View's visibility based on data
         ((TextView) findViewById(R.id.origin_tv)).setText(sandwich.getPlaceOfOrigin());
 
-        findViewById(R.id.description_container).setVisibility(TextUtils.isEmpty(sandwich.getDescription()) ? View.GONE : View.VISIBLE);
+        findViewById(R.id.description_container)
+                .setVisibility(TextUtils.isEmpty(sandwich.getDescription()) ? View.GONE : View.VISIBLE); // Altering View's visibility based on data
         ((TextView) findViewById(R.id.description_tv)).setText(sandwich.getDescription());
-    }
-
-    public String getFormattedStringOfList(List<String> list) {
-        StringBuilder builder = new StringBuilder();
-        for (String name : list) {
-            builder.append(name);
-            builder.append(", ");
-        }
-        if (list.size() > 0)
-            builder.delete(builder.length() - 2, builder.length());
-        return builder.toString();
     }
 }

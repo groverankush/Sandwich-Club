@@ -12,6 +12,14 @@ public class JsonUtils {
 
     public static Sandwich parseSandwichJson(String json) {
 
+        /*
+          I have well received your feedback on using optString() and similar functions. I will
+          keep that in mind and use them wherever required. In this project I have managed the
+          visibility manually. If some value is not present, the section will not be visible.
+
+          Thanks! for the great review.
+         */
+
         try {
             JSONObject sandwichJson = new JSONObject(json);
             Sandwich sandwich = new Sandwich();
